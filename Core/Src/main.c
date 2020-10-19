@@ -25,6 +25,7 @@
 #include "ssd1306.h"
 #include "fonts.h"
 #include "stdio.h"
+#include "EEPROM.h"
 #include <math.h>
 
 /* Private includes ----------------------------------------------------------*/
@@ -69,6 +70,7 @@
 
 #define THRESHOLD			0.13
 
+#define CANT_ALARMAS		7
 //#define POS_SIGNO			5,35
 //#define __SET_IWDG
 
@@ -108,6 +110,7 @@ uint32_t stop_timer(void);
 
 /* USER CODE END PFP */
 uint8_t antirebote (uint8_t lectura_actual);
+
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 MPU6050_t MPU6050;
@@ -123,6 +126,8 @@ uint8_t f_hold = OFF;
 uint8_t f_zero = OFF;
 
 uint8_t fEjeY = OFF;
+
+uint8_t customAlarms[CANT_ALARMAS] = {30,45,90,0,0,0,0};
 
 /*
  * Variables Para pasar datos entre tareas.
@@ -200,8 +205,6 @@ int main(void)
 	HAL_GPIO_WritePin(GPIOC, Led_Blink_Pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOB, outputLed_Pin, GPIO_PIN_RESET);
 
-
-
 	/*
 	 * Uso el timer 2 para el monitor del sistema.
 	 */
@@ -231,7 +234,8 @@ int main(void)
     agregar_tarea(lista_tareas, tarea_refresh, NULL, 0, 1, 0, 100000);  	// et_wcet = 3632
     agregar_tarea(lista_tareas, tarea_pulsadores, NULL, 0, 10, 0, 100000);  	// et_wcet =
     agregar_tarea(lista_tareas, tarea_modos, NULL, 0, 10, 0, 100000);  	// et_wcet =
-    agregar_tarea(lista_tareas, tarea_display, NULL, 0, 1, 0, 100000); 	// et_wcet = 7876
+    agregar_tarea(lista_tareas, tarea_display, NULL, 0, 1, 0, 100000); 	// et_wcet =
+    agregar_tarea(lista_tareas, tarea_, NULL, 0, 1, 0, 100000); 	// et_wcet =
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -254,9 +258,6 @@ int main(void)
 //	 FUNCION ANTIREBOTE	  //
 ////////////////////////////
 
-// Recibe el Pin donde esta el pulsador, y el tiempo en ticks debido a la funcion xTaskGetTickCount().
-// Veo el pulsador hasta detectar pulso por primera vez, si pasados los 50ms sigue presionado, retorno un 1.
-// Si no hay tecla presionada o si no pasaron 50ms desde la primera deteccion devuelvo un 0.
 
 uint8_t antirebote (uint8_t teclaActual)
 {
@@ -320,13 +321,13 @@ void tarea_modos(void *p)
 			offset_x = 0;
 			offset_y = 0;
 			clean = ON;
+			f_HOLD = ON;
 		}
 		fEjeY = OFF;
 		if(tecla == HOLD){
 			f_hold = ~ f_hold; // toggle flag
 		}
 		if(tecla == ZERO){
-			// VER COMO IMPLEMENTAR -- NO LO VOY A PENSAR AHORA -- gg ez
 			f_zero = ON;
 		}
 		break;
@@ -337,13 +338,13 @@ void tarea_modos(void *p)
 			offset_x = 0;
 			offset_y = 0;
 			clean = ON;
+			f_HOLD = ON;
 		}
 		fEjeY = ON;
 		if(tecla == HOLD){
 			f_hold = ~ f_hold; // toggle flag
 		}
 		if(tecla == ZERO){
-			// VER COMO IMPLEMENTAR -- NO LO VOY A PENSAR AHORA -- gg ez
 			f_zero = ON;
 		}
 		break;
@@ -353,10 +354,15 @@ void tarea_modos(void *p)
 			offset_x = 0;
 			offset_y = 0;
 			clean = ON;
+			f_HOLD = ON;
 		}
 		fEjeY = OFF;
-		f_hold = OFF;
+		if(tecla == HOLD){
 
+		}
+		if(tecla == ZERO){
+
+		}
 
 		break;
 	default:
@@ -367,16 +373,16 @@ void tarea_modos(void *p)
 void tarea_display(void *p)
 {
 	static int cont = 0;				//!< Variable contador para el promedio
-	static float prom_x = 0;			//!<
-	static float prom_y = 0;			//!<
-	static float valorAntX = 0;			//!<
-	static float valorAntY = 0;			//!<
-	float prom_offset_x = 0;			//!<
-	float prom_offset_y = 0;			//!<
-	char str_x[5];						//!<
-	char str_y[5];						//!<
-	char str1[6] = {0};				//!<
-	char str2[6] = {0};				//!<
+	static float prom_x = 0;			//!< Variable para promedio del eje x
+	static float prom_y = 0;			//!< Variable para promedio del eje y
+	static float valorAntX = 0;			//!< Variable para promedio anterior del eje x
+	static float valorAntY = 0;			//!< Variable para promedio anterior del eje y
+	float prom_offset_x = 0;			//!< Variable para promedio menos el offset del eje x
+	float prom_offset_y = 0;			//!< Variable para promedio menos el offset del eje y
+	char str_x[5];						//!< Variable para guardar el string del promedio del eje x
+	char str_y[5];						//!< Variable para guardar el string del promedio del eje y
+	char str1[6] = {0};					//!< Variable para el string del promedio con signo del eje x
+	char str2[6] = {0};					//!< Variable para el string del promedio con signo del eje y
 
 	if(cont >= PROMEDIO){
 		cont = 0;

@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000029  00000000  00000000  00020280  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000b92f  00000000  00000000  000202a9  2**0
+ 12 .debug_info   0000b9a6  00000000  00000000  000202a9  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 00001c93  00000000  00000000  0002bbd8  2**0
+ 13 .debug_abbrev 00001c93  00000000  00000000  0002bc4f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 00000888  00000000  00000000  0002d870  2**3
+ 14 .debug_aranges 00000888  00000000  00000000  0002d8e8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 000007c0  00000000  00000000  0002e0f8  2**3
+ 15 .debug_ranges 000007c0  00000000  00000000  0002e170  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  00015da5  00000000  00000000  0002e8b8  2**0
+ 16 .debug_macro  00004366  00000000  00000000  0002e930  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   000083aa  00000000  00000000  0004465d  2**0
+ 17 .debug_line   000083b6  00000000  00000000  00032c96  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    00074c5b  00000000  00000000  0004ca07  2**0
+ 18 .debug_str    00074cde  00000000  00000000  0003b04c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  000c1662  2**0
+ 19 .comment      0000007b  00000000  00000000  000afd2a  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00002ebc  00000000  00000000  000c16e0  2**2
+ 20 .debug_frame  00002ebc  00000000  00000000  000afda8  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1447,13 +1447,13 @@ Disassembly of section .text:
 int main(void)
 {
  80010d0:	b580      	push	{r7, lr}
- 80010d2:	b086      	sub	sp, #24
+ 80010d2:	b088      	sub	sp, #32
  80010d4:	af04      	add	r7, sp, #16
   /* USER CODE BEGIN 1 */
 	uint32_t tics_despachador;
 	uint32_t wcet_todo = 0;
  80010d6:	2300      	movs	r3, #0
- 80010d8:	607b      	str	r3, [r7, #4]
+ 80010d8:	60fb      	str	r3, [r7, #12]
 
 	/*
 	 * Pongo en diez la variable que cuenta la cantidad de ticks que tienen
@@ -1514,7 +1514,7 @@ int main(void)
  8001118:	f44f 4100 	mov.w	r1, #32768	; 0x8000
  800111c:	4849      	ldr	r0, [pc, #292]	; (8001244 <main+0x174>)
  800111e:	f002 f884 	bl	800322a <HAL_GPIO_WritePin>
-
+	Alarmas FedeGay;
 
 	/*
 	 * Uso el timer 2 para el monitor del sistema.
@@ -1667,15 +1667,15 @@ int main(void)
 		tics_despachador = dwt_read();
  8001224:	4b05      	ldr	r3, [pc, #20]	; (800123c <main+0x16c>)
  8001226:	685b      	ldr	r3, [r3, #4]
- 8001228:	603b      	str	r3, [r7, #0]
+ 8001228:	60bb      	str	r3, [r7, #8]
 		if (tics_despachador > wcet_todo)
- 800122a:	683a      	ldr	r2, [r7, #0]
- 800122c:	687b      	ldr	r3, [r7, #4]
+ 800122a:	68ba      	ldr	r2, [r7, #8]
+ 800122c:	68fb      	ldr	r3, [r7, #12]
  800122e:	429a      	cmp	r2, r3
  8001230:	d9ec      	bls.n	800120c <main+0x13c>
 			wcet_todo = tics_despachador;
- 8001232:	683b      	ldr	r3, [r7, #0]
- 8001234:	607b      	str	r3, [r7, #4]
+ 8001232:	68bb      	ldr	r3, [r7, #8]
+ 8001234:	60fb      	str	r3, [r7, #12]
 		dwt_reset();
  8001236:	e7e9      	b.n	800120c <main+0x13c>
  8001238:	200007b0 	.word	0x200007b0

@@ -1,3 +1,4 @@
+"Core/Src/EEPROM.o"
 "Core/Src/fonts.o"
 "Core/Src/main.o"
 "Core/Src/mpu_6050 .o"
