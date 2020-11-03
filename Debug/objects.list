@@ -1,4 +1,4 @@
-"Core/Src/EEPROM.o"
+"Core/Src/eeprom.o"
 "Core/Src/fonts.o"
 "Core/Src/main.o"
 "Core/Src/mpu_6050 .o"
@@ -8,6 +8,7 @@
 "Core/Src/syscalls.o"
 "Core/Src/sysmem.o"
 "Core/Src/system_stm32f1xx.o"
+"Core/Src/task.o"
 "Core/Startup/startup_stm32f103c8tx.o"
 "Core/planificador/miniplanificador.o"
 "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o"
