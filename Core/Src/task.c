@@ -24,7 +24,7 @@ uint8_t f_hold = OFF;
 uint8_t f_zero = OFF;
 uint8_t fEjeY = OFF;
 uint8_t fAlarms = OFF;
-uint8_t customAlarms[CANT_ALARMAS] = {30,45,90,EEPROM_EMPTY,EEPROM_EMPTY,EEPROM_EMPTY,EEPROM_EMPTY};
+float customAlarms[CANT_ALARMAS] = {30,45,90,EEPROM_EMPTY,EEPROM_EMPTY,EEPROM_EMPTY,EEPROM_EMPTY};
 
 ////////////////////////////
 //	 FUNCION ANTIREBOTE	  //
@@ -52,7 +52,7 @@ uint8_t antirebote (uint8_t teclaActual)
 
 void lastAlarm(char *string)
 {
-	int aux = 0;
+	float aux = 0;
 
 	for(int i = 0; i < CANT_ALARMAS; i++){
 		if(customAlarms[i] != EEPROM_EMPTY)
@@ -60,11 +60,16 @@ void lastAlarm(char *string)
 		else
 			break;
 	}
-	if(aux < 10){
-		sprintf(string,"0%d", aux);
+	if(aux!=90){
+		if(aux < 10){
+			sprintf(string,"0%.2f", aux);
+		}
+		else{
+			sprintf(string,"%.2f", aux);
+		}
 	}
-	else{
-		sprintf(string,"%d", aux);
+	else{	//aux==90
+		sprintf(string,"%d   ", (int)aux);
 	}
 }
 

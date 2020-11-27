@@ -4,7 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Core/Src/eeprom.c \
+../Core/Src/EEPROM.c \
 ../Core/Src/fonts.c \
 ../Core/Src/main.c \
 ../Core/Src/mpu_6050\ .c \
@@ -17,7 +17,7 @@ C_SRCS += \
 ../Core/Src/task.c 
 
 OBJS += \
-./Core/Src/eeprom.o \
+./Core/Src/EEPROM.o \
 ./Core/Src/fonts.o \
 ./Core/Src/main.o \
 ./Core/Src/mpu_6050\ .o \
@@ -30,7 +30,7 @@ OBJS += \
 ./Core/Src/task.o 
 
 C_DEPS += \
-./Core/Src/eeprom.d \
+./Core/Src/EEPROM.d \
 ./Core/Src/fonts.d \
 ./Core/Src/main.d \
 ./Core/Src/mpu_6050\ .d \
@@ -44,8 +44,8 @@ C_DEPS += \
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Core/Src/eeprom.o: ../Core/Src/eeprom.c
-	arm-none-eabi-gcc "$<" -mcpu=cortex-m3 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F103xB -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/eeprom.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
+Core/Src/EEPROM.o: ../Core/Src/EEPROM.c
+	arm-none-eabi-gcc "$<" -mcpu=cortex-m3 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F103xB -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/EEPROM.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
 Core/Src/fonts.o: ../Core/Src/fonts.c
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m3 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F103xB -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/fonts.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
 Core/Src/main.o: ../Core/Src/main.c

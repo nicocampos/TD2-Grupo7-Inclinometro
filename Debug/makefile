@@ -16,6 +16,12 @@ RM := rm -rf
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(strip $(S_DEPS)),)
+-include $(S_DEPS)
+endif
+ifneq ($(strip $(S_UPPER_DEPS)),)
+-include $(S_UPPER_DEPS)
+endif
 ifneq ($(strip $(C_DEPS)),)
 -include $(C_DEPS)
 endif
@@ -41,8 +47,8 @@ Inclinometro.bin \
 all: Inclinometro.elf secondary-outputs
 
 # Tool invocations
-Inclinometro.elf: $(OBJS) $(USER_OBJS) N:\Documentos\TD2\Proyecto\TD2_Grupo7_Inclinometro_99f29e5ae7d70251f41d07addf2b9cd188657a98\TD2-Grupo7-Inclinometro-99f29e5ae7d70251f41d07addf2b9cd188657a98\STM32F103C8TX_FLASH.ld
-	arm-none-eabi-gcc -o "Inclinometro.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"N:\Documentos\TD2\Proyecto\TD2_Grupo7_Inclinometro_99f29e5ae7d70251f41d07addf2b9cd188657a98\TD2-Grupo7-Inclinometro-99f29e5ae7d70251f41d07addf2b9cd188657a98\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Inclinometro.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Inclinometro.elf: $(OBJS) $(USER_OBJS) D:\UTN\ST\ST_Workspace\TD2-Grupo7-Inclinometro-99f29e5ae7d70251f41d07addf2b9cd188657a98.zip_expanded\TD2-Grupo7-Inclinometro-99f29e5ae7d70251f41d07addf2b9cd188657a98\STM32F103C8TX_FLASH.ld
+	arm-none-eabi-gcc -o "Inclinometro.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\UTN\ST\ST_Workspace\TD2-Grupo7-Inclinometro-99f29e5ae7d70251f41d07addf2b9cd188657a98.zip_expanded\TD2-Grupo7-Inclinometro-99f29e5ae7d70251f41d07addf2b9cd188657a98\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Inclinometro.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

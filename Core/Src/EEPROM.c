@@ -23,7 +23,8 @@
 
 extern I2C_HandleTypeDef hi2c1;
 
-extern uint8_t customAlarms[CANT_ALARMAS];
+extern float customAlarms[CANT_ALARMAS];
+uint8_t	customAlarmsInt[CANT_ALARMAS+1]={0};
 
 extern float valuetoSave;
 
@@ -32,11 +33,16 @@ uint8_t readEEPROM( void )
 	uint16_t eeprom_memadd = EEPROM_MEMADD;
 
 	for(int i = CANT_RESERVADO; i < CANT_ALARMAS; i++){
-		if(HAL_I2C_Mem_Read(&hi2c1, EEPROM_ADDRESS_READ, eeprom_memadd, I2C_MEMADD_SIZE_16BIT, &customAlarms[i], 1, TIMEOUT) != HAL_OK)
+		if(HAL_I2C_Mem_Read(&hi2c1, EEPROM_ADDRESS_READ, eeprom_memadd, I2C_MEMADD_SIZE_16BIT, &customAlarmsInt[i], 1, TIMEOUT) != HAL_OK)
 			return EEPROM_ERR;
 		eeprom_memadd += EEPROM_SHIFT_16BIT;
 		HAL_Delay(5);
 	}
+
+	customAlarms[3] = customAlarmsInt[0] + ((float) customAlarmsInt[1] /100);
+	customAlarms[4] = customAlarmsInt[2] + ((float) customAlarmsInt[3] /100);
+	customAlarms[5] = customAlarmsInt[4] + ((float) customAlarmsInt[5] /100);
+	customAlarms[6] = customAlarmsInt[6] + ((float) customAlarmsInt[7] /100);
 
 	return EEPROM_OK;
 }
@@ -58,8 +64,17 @@ uint8_t writeEEPROM( void )
 {
 	uint16_t eeprom_memadd = EEPROM_MEMADD;
 
+	customAlarmsInt[0] = customAlarms[3];
+	customAlarmsInt[1] = (customAlarms[3] - (uint8_t) customAlarms[3]) * 100;
+	customAlarmsInt[2] = customAlarms[4];
+	customAlarmsInt[3] = (customAlarms[4] - (uint8_t) customAlarms[4]) * 100;
+	customAlarmsInt[4] = customAlarms[5];
+	customAlarmsInt[5] = (customAlarms[5] - (uint8_t) customAlarms[5]) * 100;
+	customAlarmsInt[6] = customAlarms[6];
+	customAlarmsInt[7] = (customAlarms[6] - (uint8_t) customAlarms[6]) * 100;
+
 	for(int i = CANT_RESERVADO; i < CANT_ALARMAS; i++){
-		if(HAL_I2C_Mem_Write(&hi2c1, EEPROM_ADDRESS_WRITE, eeprom_memadd, I2C_MEMADD_SIZE_16BIT, &customAlarms[i], 1, TIMEOUT) != HAL_OK)
+		if(HAL_I2C_Mem_Write(&hi2c1, EEPROM_ADDRESS_WRITE, eeprom_memadd, I2C_MEMADD_SIZE_16BIT, &customAlarmsInt[i], 1, TIMEOUT) != HAL_OK)
 			return EEPROM_ERR;
 		eeprom_memadd += EEPROM_SHIFT_16BIT;
 		HAL_Delay(5);
@@ -114,7 +129,7 @@ void EEPROM_refresh(uint8_t action)
 		for(int i = CANT_RESERVADO; i < CANT_ALARMAS; i++){
 			if(customAlarms[i] == EEPROM_EMPTY){
 				refresh_ok = OK;
-				customAlarms[i] = (uint8_t)valuetoSave;
+				customAlarms[i] = valuetoSave;
 				writeEEPROM();
 				break;
 			}
